@@ -395,7 +395,7 @@ void* profiler_worker_routine(void* arg){
     perfcounters_stop();
     perfcounters_finalize();
     fprintf(perflog_fd,"\n=============================================================================\n");
-    fprintf(perflog_fd,"\nCOUNTER:%d\t\tn",perflog_counter);
+    
     
     if (perflog_fd!=NULL){
 		fclose(perflog_fd);
