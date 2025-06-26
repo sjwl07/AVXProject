@@ -1,0 +1,20 @@
+SIMD_FLAGS_SSE=-mno-avx -mno-avx2 -mno-avx512f -msse4.2
+SIMD_FLAGS_AVX=-mavx -mno-avx2 -mno-avx512f
+SIMD_FLAGS_AVX2=-mavx2 -mno-avx512f
+SIMD_FLAGS_AVX512=-mavx512f -mavx512cd -mavx512dq -mavx512bw -mavx512vl
+
+CC=gcc
+CFLAGS=-I../../ -O3 -fopenmp -DUSE_MKL -DMKL_ILP64 -m64 -I${MKLROOT}/include $(SIMD_FLAGS_SSE)
+LDFLAGS=-L. -lprofiler -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl -lrt
+all: dgemm
+
+dgemm: dgemm.c
+	$(CC) $(CFLAGS) -o dgemm dgemm.c $(LDFLAGS)
+dgemm-no-avx: dgemm.c
+	$(CC) -O3 -I../../ -fopenmp -Wall $(CUTTLEFISH_CXXFLAGS) -o dgemm-no-avx dgemm.c -lpthread -lm \
+		$(CUTTLEFISH_LDFLAGS) $(CUTTLEFISH_LDLIBS)
+
+clean:
+	rm -f dgemm dgemm-no-avx *.o
+	rm -f perflog.txt finalRes.txt
+
